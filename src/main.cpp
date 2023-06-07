@@ -4,30 +4,32 @@
 #include "demos/lv_demos.h"
 #include <cstdio>
 
-#include "PololuLedStrip.h"
+
 
 ThreadLvgl threadLvgl(30);
 
-// Déclaration de la broche de contrôle des LED
-DigitalOut ledPin(D2);
-
-// Déclaration du nombre de LED dans le bandeau
-const uint16_t numLEDs = 30;
-
-// Déclaration de l'objet PololuLedStrip
-PololuLedStrip ledStrip(D2, numLEDs);
-
-int main() {
-    while (1) {
-        // Allumer toutes les LED en rouge
-        for (uint16_t i = 0; i < numLEDs; i++) {
-            ledStrip.setPixelColor(i, 255, 0, 0);
+int main()
+{
+    AnalogIn micro(A0);
+    DigitalIn gate(D2);
+    while(1)
+    {
+        float microValue = micro.read();
+        if (microValue>0.7 && gate==1){
+            printf("Le sons est FORT\n");
+            printf("%.2f\n", static_cast<double>(microValue));
         }
 
-        // Envoyer les couleurs au bandeau de LED
-        ledStrip.show();
+        else if (microValue>0.2 && microValue<0.7 && gate==1){
+            printf("Le sons est CORRECT\n");
+            printf("%.2f\n", static_cast<double>(microValue));
+        }
+        else if (microValue<0.2 && gate==1){
+            printf("Le sons est FAIBLE\n");
+            printf("%.2f\n", static_cast<double>(microValue));
+        }
 
-        // Attendre pendant 1 seconde
-        ThisThread::sleep_for(1s);
+        ThisThread::sleep_for(2ms);
+
     }
 }
