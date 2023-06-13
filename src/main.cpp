@@ -75,6 +75,23 @@ void bar_3(void)
     lv_anim_start(&a);
 }
 
+void allumerLed(float microPourcentage, int rougeMax, int vertMax, int bleuMax) {
+    int index;
+    int ledRouge, ledVert, ledBleu;
+    int NUM_LEDS = 30;
+
+    for (index = 1; index <= NUM_LEDS; index++) {
+        if (microPourcentage > (index - 1) * 100 / NUM_LEDS) {
+            ledRouge = (microPourcentage - (index - 1) * 100 / NUM_LEDS) * rougeMax / 100;
+            ledVert = (microPourcentage - (index - 1) * 100 / NUM_LEDS) * vertMax / 100;
+            ledBleu = (microPourcentage - (index - 1) * 100 / NUM_LEDS) * bleuMax / 100;
+            threadLeds.setLed(index, ledRouge, ledVert, ledBleu);
+        } else {
+            threadLeds.setLed(index, 0, 0, 0);
+        }
+    }
+}
+
 
 
 int main() {
@@ -100,7 +117,7 @@ int main() {
     while(1) {
 
         float microValue = micro.read();
-        microPourcentage = microValue*110.0;
+        microPourcentage = (microValue*100.0)+10;
         set_temp(bar,microPourcentage);
 
 
@@ -117,8 +134,10 @@ int main() {
         else if (microValue<0.1 && gate==1){
             printf("Le son est FAIBLE\n");
             printf("%.2f\n", static_cast<double>(microValue));
+
             threadLeds.setLed(n, rouge,vert,bleu);
         }
+        
 
         threadLvgl.lock();
 
@@ -126,11 +145,9 @@ int main() {
         couleur = lv_colorwheel_get_rgb(cw);
         convertir_couleur(couleur, &rouge, &vert, &bleu);
         
-        
-
         threadLvgl.unlock();
+        allumerLed(microPourcentage,rouge,vert,bleu);
 
-        
 
         ThisThread::sleep_for(2ms);
 
