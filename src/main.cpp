@@ -6,11 +6,17 @@
 #include <lvgl.h>
 #include <examples/lv_examples.h>
 
-
+#include <threadLedsNeo.h>
 
 
 ThreadLvgl threadLvgl(30);
+ThreadLedsNeo threadLeds(A3, 5);
+
 lv_obj_t * bar;
+lv_obj_t * cw;
+lv_color32_t couleur;
+uint8_t rouge, vert, bleu;
+
 
 void texte (void) {
 
@@ -21,9 +27,14 @@ void texte (void) {
     lv_obj_align(label2, LV_ALIGN_CENTER, 0, 40);
 }
 
-void colorwheel(void) {
-    lv_obj_t * cw;
+void convertir_couleur(lv_color32_t couleur, uint8_t* rouge, uint8_t* vert, uint8_t* bleu) {
+    *rouge = couleur.ch.red;
+    *vert = couleur.ch.green;
+    *bleu = couleur.ch.blue;
+}
 
+void colorwheel(void) {
+    
     cw = lv_colorwheel_create(lv_scr_act(), true);
     lv_obj_set_size(cw, 245, 245);
     lv_obj_align(cw, LV_ALIGN_CENTER, 0,0);
@@ -50,7 +61,7 @@ void bar_3(void)
     bar = lv_bar_create(lv_scr_act());
     lv_obj_add_style(bar, &style_indic, LV_PART_INDICATOR);
     lv_obj_set_size(bar, 20, 200);
-    lv_obj_align(bar, LV_ALIGN_OUT_LEFT_MID, 2,0);
+    lv_obj_align(bar, LV_ALIGN_LEFT_MID, 10,20);
     lv_bar_set_range(bar, -10, 100);
 
     lv_anim_t a;
@@ -71,20 +82,29 @@ int main() {
     AnalogIn micro(A0);
     DigitalIn gate(D2);
 
+    int n = 0;
+    
+
     float microPourcentage = 0.0;
 
+    threadLvgl.lock();
     texte();
     colorwheel();
+    
     bar_3();
+    threadLvgl.unlock();
 
     
 
 
     while(1) {
+
         float microValue = micro.read();
         microPourcentage = microValue*110.0;
         set_temp(bar,microPourcentage);
-        
+
+
+
         if (microValue>0.7 && gate==1){
             printf("Le son est FORT\n");
             printf("%.2f\n", static_cast<double>(microValue));
@@ -97,12 +117,22 @@ int main() {
         else if (microValue<0.1 && gate==1){
             printf("Le son est FAIBLE\n");
             printf("%.2f\n", static_cast<double>(microValue));
+            threadLeds.setLed(n, rouge,vert,bleu);
         }
+
+        threadLvgl.lock();
+
         lv_bar_set_value(bar, microPourcentage, LV_ANIM_OFF);
+        couleur = lv_colorwheel_get_rgb(cw);
+        convertir_couleur(couleur, &rouge, &vert, &bleu);
+        
+        
+
+        threadLvgl.unlock();
 
         
 
-        ThisThread::sleep_for(1ms);
+        ThisThread::sleep_for(2ms);
 
     }
 }
