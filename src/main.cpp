@@ -117,7 +117,7 @@ int main() {
     while(1) {
 
         float microValue = micro.read();
-        microPourcentage = (microValue*100.0)+10;
+        microPourcentage = (microValue*100.0)+5;
         set_temp(bar,microPourcentage);
 
 
@@ -135,7 +135,7 @@ int main() {
             printf("Le son est FAIBLE\n");
             printf("%.2f\n", static_cast<double>(microValue));
 
-            threadLeds.setLed(n, rouge,vert,bleu);
+            
         }
         
 
@@ -146,6 +146,7 @@ int main() {
         convertir_couleur(couleur, &rouge, &vert, &bleu);
         
         threadLvgl.unlock();
+        threadLeds.setLed(n, rouge,vert,bleu);
         allumerLed(microPourcentage,rouge,vert,bleu);
 
 
