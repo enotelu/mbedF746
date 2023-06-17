@@ -9,7 +9,6 @@
 #include <threadLedsNeo.h>
 
 
-
 ThreadLvgl threadLvgl(30);
 ThreadLedsNeo threadLeds(A3, 5);
 
@@ -21,6 +20,7 @@ lv_obj_t * slider;
 int valSlide;
 int choix = 0;
 float microPourcentage;
+int NUM_LEDS = 30;
 
 lv_obj_t * sw;
 
@@ -153,16 +153,15 @@ void convertir_couleur(lv_color32_t couleur, uint8_t* rouge, uint8_t* vert, uint
     *bleu = couleur.ch.blue;
 }
 
-void allumerLed(float microPourcentage, int rougeMax, int vertMax, int bleuMax) {
+void allumerLed(float valSlide, int rougeMax, int vertMax, int bleuMax) {
     int index;
     int ledRouge, ledVert, ledBleu;
-    int NUM_LEDS = 30;
 
     for (index = 0; index <= NUM_LEDS; index++) {
-        if (microPourcentage > (index - 1) * 100 / NUM_LEDS) {
-            ledRouge = (microPourcentage - (index - 1) * 100 / NUM_LEDS) * rougeMax / 100;
-            ledVert = (microPourcentage - (index - 1) * 100 / NUM_LEDS) * vertMax / 100;
-            ledBleu = (microPourcentage - (index - 1) * 100 / NUM_LEDS) * bleuMax / 100;
+        if (valSlide > (index - 1) * 100 / NUM_LEDS) {
+            ledRouge = (valSlide - (index - 1) * 100 / NUM_LEDS) * rougeMax / 100;
+            ledVert = (valSlide - (index - 1) * 100 / NUM_LEDS) * vertMax / 100;
+            ledBleu = (valSlide - (index - 1) * 100 / NUM_LEDS) * bleuMax / 100;
             threadLeds.setLed(index, ledRouge, ledVert, ledBleu);
         } else {
             threadLeds.setLed(index, 0, 0, 0);
@@ -173,7 +172,6 @@ void allumerLed(float microPourcentage, int rougeMax, int vertMax, int bleuMax) 
 void sonometre(float microPourcentage) {
     int index;
     int ledRouge, ledVert, ledBleu;
-    int NUM_LEDS = 30;
 
     for (index = 0; index < NUM_LEDS; index++) {
         float ratio = static_cast<float>(index) / (NUM_LEDS - 1);  // Ratio d'interpolation entre le vert et le rouge
@@ -193,6 +191,7 @@ void sonometre(float microPourcentage) {
         threadLeds.setLed(index, ledRouge, ledVert, ledBleu);
     }
 }
+
 
 
 
