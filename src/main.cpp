@@ -216,7 +216,7 @@ int main() {
     while(1) {
 
         float microValue = micro.read();
-        microPourcentage = (microValue*100.0)+25;
+        microPourcentage = (microValue*105.0)+22;
         set_temp(bar,microPourcentage);
         
 
