@@ -13,11 +13,7 @@ Matériels utilsés :
 
 #include <mbed.h>
 #include <threadLvgl.h>
-
-#include "demos/lv_demos.h"
-#include <cstdio>
 #include <lvgl.h>
-#include <examples/lv_examples.h>
 
 #include <threadLedsNeo.h>  //permet d'utiliser les LED Pololu (SK6812)
 
