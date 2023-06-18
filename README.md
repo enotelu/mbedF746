@@ -3,7 +3,7 @@ LAVAL Thibault LP MECSE SESAM
 Projet interfaçage, réalisé une interface à l'aide de la carte MBED F746 et de la library LVGL.h
 
 Matériels utilsés :
-- carte MBED F746
+- carte MBED STM32 F746 DISCO
 - capteur sonore SEN12642
 - bandeau LED Pololu 30 LEDs SK6812
 
