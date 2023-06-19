@@ -187,18 +187,18 @@ int main() {
 
     texte();        //lancement de la fonction texte permettant de l'afficher
     colorwheel();   //lancement de la fonction colorwheel permettant de l'afficher
-    switch_1();     //lancement de la fonction colorwheel permettant de l'afficher
-    switch_2();     //lancement de la fonction colorwheel permettant de l'afficher
-    bar_1();        //lancement de la fonction colorwheel permettant de l'afficher
-    slider_1();     //lancement de la fonction colorwheel permettant de l'afficher
+    switch_1();     //lancement de la fonction switch_1 permettant de l'afficher
+    switch_2();     //lancement de la fonction switch_2 permettant de l'afficher
+    bar_1();        //lancement de la fonction bar_1 permettant de l'afficher
+    slider_1();     //lancement de la fonction slider_1 permettant de l'afficher
     
     threadLvgl.unlock();
 
       while (1) {
         // Lecture de la valeur analogique du microphone et calcul du pourcentage correspondant
         float microValue = micro.read();
-        microPourcentage = (microValue * 105.0) + 22;
-        set_temp(bar, microPourcentage);
+        microPourcentage = (microValue * 105.0) + 22; //mise sous forme de pourcentage de la valeur du gain du micro
+        set_temp(bar, microPourcentage); //envoie de la valeur du micro vers la bar
 
         // Mise à jour de la barre de progression et de la couleur en fonction de la valeur du microphone et de la colorwheel
         lv_bar_set_value(bar, microPourcentage, LV_ANIM_OFF);
